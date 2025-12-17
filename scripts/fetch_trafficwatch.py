@@ -160,6 +160,9 @@ def main():
     for feed_type, url in FEEDS.items():
         xml_bytes = fetch(url)
         current_items.extend(parse_rss(xml_bytes, feed_type))
+        items=parse_rss(xml_bytes, feed_type)
+        print(f"{feed_type}: items fetched = {len(items)}")
+        current_items.extend(items)
 
     seen_this_run = set()
 
