@@ -48,30 +48,44 @@ def fetch(url: str) -> bytes:
         return r.read()
 
 
+
 def parse_rss(xml_bytes: bytes, feed_type: str):
     root = ET.fromstring(xml_bytes)
-    channel = root.find("channel")
-    items = channel.findall("item") if channel is not None else []
+
+    def local(tag: str) -> str:
+        # "{namespace}tag" -> "tag"
+        return tag.split("}", 1)[-1] if "}" in tag else tag
+
+    def child_text_by_localname(parent, wanted: str) -> str:
+        if parent is None:
+            return ""
+        for ch in list(parent):
+            if local(ch.tag) == wanted:
+                return (ch.text or "").strip()
+        return ""
 
     out = []
-    for it in items:
-        def txt(tag):
-            el = it.find(tag)
-            return (el.text or "").strip() if el is not None else ""
 
-        title = txt("title")
-        link = txt("link")
-        guid = txt("guid") or link or title  # stable-ish fallback
+    # Find items anywhere (RSS2: channel/item, RSS1: rdf:item)
+    for it in root.iter():
+        if local(it.tag) != "item":
+            continue
+
+        title = child_text_by_localname(it, "title")
+        link = child_text_by_localname(it, "link")
+        guid = child_text_by_localname(it, "guid") or link or title
 
         out.append({
             "feed_type": feed_type,
             "guid": guid,
             "title": title,
-            "pub_date": txt("pubDate"),
-            "description": txt("description"),
+            "pub_date": child_text_by_localname(it, "pubDate"),
+            "description": child_text_by_localname(it, "description"),
             "link": link,
         })
+
     return out
+
 
 
 def make_key(row: dict) -> str:
