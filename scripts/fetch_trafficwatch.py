@@ -14,7 +14,8 @@ FEEDS = {
 }
 
 DATA_DIR = "data"
-CSV_PATH = os.path.join(DATA_DIR, "trafficwatch.csv") JSON_PATH = os.path.join(DATA_DIR, "trafficwatch.json")
+CSV_PATH = os.path.join(DATA_DIR, "trafficwatch.csv") 
+JSON_PATH = os.path.join(DATA_DIR, "trafficwatch.json")
 
 
 def now_utc_iso() -> str:
