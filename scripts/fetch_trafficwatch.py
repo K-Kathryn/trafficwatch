@@ -159,6 +159,8 @@ def main():
     current_items = []
     for feed_type, url in FEEDS.items():
         xml_bytes = fetch(url)
+        if b"<item" not in xml_bytes and b":item" not in xml_bytes:
+            print(feed_type, "response starts with:", xml_bytes[:200])
         current_items.extend(parse_rss(xml_bytes, feed_type))
         items=parse_rss(xml_bytes, feed_type)
         print(f"{feed_type}: items fetched = {len(items)}")
