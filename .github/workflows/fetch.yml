@@ -1,0 +1,33 @@
+name: Fetch TrafficWatchNI RSS
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 minutes (not guaranteed exact)
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Fetch and build files
+        run: |
+          python scripts/fetch_trafficwatch.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/trafficwatch.csv data/trafficwatch.json
+          git commit -m "Update TrafficWatchNI feed" || echo "No changes"
+          git push
