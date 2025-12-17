@@ -122,12 +122,10 @@ def write_csv(rows: list[dict]) -> None:
         "description",
         "link",
         "first_seen_utc",
-        "first_seen_date",
-        "first_seen_time",
         "last_seen_utc",
         "last_seen_date",
         "last_seen_time",
-        "seen_count",
+        
         "ended_at_utc",
         "ended_date",
         "ended_time",
@@ -193,8 +191,7 @@ def main():
         rec["ended_date"] = fmt_date_ddmmyy(rec.get("ended_at_utc", ""))
         rec["ended_time"] = fmt_time_hms(rec.get("ended_at_utc", ""))
         #First seen
-        rec["first_seen_date"] = fmt_date_ddmmyy(rec.get("first_seen_utc", ""))
-        rec["first_seen_time"] = fmt_time_hms(rec.get("first_seen_utc", ""))
+
         #Last seen
         rec["last_seen_date"] = fmt_date_ddmmyy(rec.get("last_seen_utc", ""))
         rec["last_seen_time"] = fmt_time_hms(rec.get("last_seen_utc", ""))
